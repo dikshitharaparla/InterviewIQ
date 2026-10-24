@@ -1,0 +1,443 @@
+
+# questions.py
+
+import re
+import random
+
+QUESTION_BANK = {
+    "Python": [
+        "What is Python?",
+        "What are the main features of Python?",
+        "What are variables in Python?",
+        "What are Python's built-in data types?",
+        "What is the difference between a list and a tuple?",
+        "What is a dictionary?",
+        "What is a set?",
+        "What is a string?",
+        "What is type casting?",
+        "What is indentation?",
+        "What are operators in Python?",
+        "What is a conditional statement?",
+        "What are loops in Python?",
+        "What is a function?",
+        "What are parameters and arguments?",
+        "What is the return statement?",
+        "What is a lambda function?",
+        "What is list comprehension?",
+        "What is a module?",
+        "What is a package?",
+        "What is exception handling?",
+        "What are try and except blocks?",
+        "What is file handling?",
+        "What is the difference between append and extend?",
+        "What is the difference between is and ==?",
+        "What is object-oriented programming?",
+        "What is a class?",
+        "What is an object?",
+        "What is inheritance?",
+        "What is polymorphism?",
+        "What is encapsulation?",
+        "What is abstraction?",
+        "What is method overriding?",
+        "What are class and instance variables?",
+        "What is the constructor in Python?",
+        "What is self in Python?",
+        "What are *args and **kwargs?",
+        "What is a decorator?",
+        "What is a generator?",
+        "What is an iterator?",
+        "What is the Global Interpreter Lock?",
+        "What is a context manager?",
+        "What is shallow copy versus deep copy?",
+        "What is recursion?",
+        "What is a virtual environment?",
+        "How does Python manage memory?",
+        "What is multithreading?",
+        "What is multiprocessing?",
+        "What are Python's common testing tools?",
+        "How would you optimize a slow Python program?"
+    ],
+
+    "Java": [
+        "What is Java?",
+        "What are the main features of Java?",
+        "What is the JVM?",
+        "What is the difference between JDK, JRE, and JVM?",
+        "What is a class?",
+        "What is an object?",
+        "What is a constructor?",
+        "What are Java data types?",
+        "What is type casting?",
+        "What are access modifiers?",
+        "What is inheritance?",
+        "What is polymorphism?",
+        "What is encapsulation?",
+        "What is abstraction?",
+        "What is method overloading?",
+        "What is method overriding?",
+        "What is an interface?",
+        "What is an abstract class?",
+        "What is the difference between an interface and an abstract class?",
+        "What is the static keyword?",
+        "What is the final keyword?",
+        "What is the this keyword?",
+        "What is the super keyword?",
+        "What is a package?",
+        "What is exception handling?",
+        "What is the difference between checked and unchecked exceptions?",
+        "What is the difference between throw and throws?",
+        "What is the String class?",
+        "Why is String immutable?",
+        "What is the difference between StringBuilder and StringBuffer?",
+        "What is an array?",
+        "What is the Collections Framework?",
+        "What is the difference between List and Set?",
+        "What is a HashMap?",
+        "How does HashMap work?",
+        "What are generics?",
+        "What is a lambda expression?",
+        "What is a functional interface?",
+        "What is the Stream API?",
+        "What is multithreading?",
+        "What is synchronization?",
+        "What is a thread lifecycle?",
+        "What is garbage collection?",
+        "What is the difference between == and equals()?",
+        "What is the difference between stack and heap memory?",
+        "What is deadlock in Java?",
+        "What is serialization?",
+        "What are annotations?",
+        "What is JDBC?",
+        "How would you improve Java application performance?"
+    ],
+
+    "DBMS": [
+        "What is a DBMS?",
+        "What is a relational database?",
+        "What is a database schema?",
+        "What is a table?",
+        "What are rows and columns?",
+        "What is a primary key?",
+        "What is a foreign key?",
+        "What is a candidate key?",
+        "What is a composite key?",
+        "What is a unique constraint?",
+        "What is SQL?",
+        "What are DDL, DML, DCL, and TCL?",
+        "What is the difference between DELETE, DROP, and TRUNCATE?",
+        "What is the difference between WHERE and HAVING?",
+        "What is GROUP BY?",
+        "What are aggregate functions?",
+        "What is a JOIN?",
+        "What are the types of JOINs?",
+        "What is a subquery?",
+        "What is a correlated subquery?",
+        "What is a view?",
+        "What is an index?",
+        "What are the advantages of indexing?",
+        "What is normalization?",
+        "What is first normal form?",
+        "What is second normal form?",
+        "What is third normal form?",
+        "What is BCNF?",
+        "What is denormalization?",
+        "What is a transaction?",
+        "What are ACID properties?",
+        "What is COMMIT?",
+        "What is ROLLBACK?",
+        "What is concurrency control?",
+        "What is a database deadlock?",
+        "What is serializability?",
+        "What is a stored procedure?",
+        "What is a trigger?",
+        "What is a cursor?",
+        "What is NULL in SQL?",
+        "What is the difference between UNION and UNION ALL?",
+        "What is a database constraint?",
+        "What is query optimization?",
+        "What is a clustered index?",
+        "What is a non-clustered index?",
+        "What is database replication?",
+        "What is database sharding?",
+        "What is a NoSQL database?",
+        "What is the difference between SQL and NoSQL?",
+        "How would you optimize a slow SQL query?"
+    ],
+
+    "DSA": [
+        "What is a data structure?",
+        "What is an algorithm?",
+        "What is time complexity?",
+        "What is space complexity?",
+        "What is Big O notation?",
+        "What is an array?",
+        "What is a linked list?",
+        "What is a stack?",
+        "What is a queue?",
+        "What is a circular queue?",
+        "What is a deque?",
+        "What is a hash table?",
+        "What is a collision in hashing?",
+        "What is linear search?",
+        "What is binary search?",
+        "What is bubble sort?",
+        "What is selection sort?",
+        "What is insertion sort?",
+        "What is merge sort?",
+        "What is quick sort?",
+        "What is recursion?",
+        "What is a base case in recursion?",
+        "What is a tree?",
+        "What is a binary tree?",
+        "What is a binary search tree?",
+        "What is tree traversal?",
+        "What are preorder, inorder, and postorder traversal?",
+        "What is a heap?",
+        "What is a priority queue?",
+        "What is a graph?",
+        "What is BFS?",
+        "What is DFS?",
+        "What is a shortest-path algorithm?",
+        "What is Dijkstra's algorithm?",
+        "What is a topological sort?",
+        "What is a minimum spanning tree?",
+        "What is dynamic programming?",
+        "What is memoization?",
+        "What is tabulation?",
+        "What is a greedy algorithm?",
+        "What is backtracking?",
+        "What is the two-pointer technique?",
+        "What is the sliding-window technique?",
+        "What is a prefix sum?",
+        "What is union-find?",
+        "What is amortized analysis?",
+        "What is a trie?",
+        "What is the difference between BFS and DFS?",
+        "How do you detect a cycle in a graph?",
+        "How do you choose an efficient algorithm?"
+    ],
+
+    "Operating Systems": [
+        "What is an operating system?",
+        "What are the main functions of an operating system?",
+        "What is a process?",
+        "What is a thread?",
+        "What is the difference between a process and a thread?",
+        "What is a process control block?",
+        "What is a process state?",
+        "What is context switching?",
+        "What is CPU scheduling?",
+        "What is First Come First Serve scheduling?",
+        "What is Shortest Job First scheduling?",
+        "What is Round Robin scheduling?",
+        "What is priority scheduling?",
+        "What is a race condition?",
+        "What is a critical section?",
+        "What is a mutex?",
+        "What is a semaphore?",
+        "What is synchronization?",
+        "What is a deadlock?",
+        "What are the four conditions for deadlock?",
+        "What is deadlock prevention?",
+        "What is deadlock avoidance?",
+        "What is Banker's algorithm?",
+        "What is memory management?",
+        "What is paging?",
+        "What is segmentation?",
+        "What is virtual memory?",
+        "What is demand paging?",
+        "What is a page fault?",
+        "What is page replacement?",
+        "What is the FIFO page replacement algorithm?",
+        "What is the LRU page replacement algorithm?",
+        "What is thrashing?",
+        "What is fragmentation?",
+        "What is the difference between internal and external fragmentation?",
+        "What is swapping?",
+        "What is a file system?",
+        "What is a system call?",
+        "What is kernel mode versus user mode?",
+        "What is a monolithic kernel?",
+        "What is a microkernel?",
+        "What is an interrupt?",
+        "What is a device driver?",
+        "What is spooling?",
+        "What is inter-process communication?",
+        "What are pipes and shared memory?",
+        "What is multitasking?",
+        "What is multiprocessing?",
+        "What is a real-time operating system?",
+        "How would you troubleshoot high CPU or memory usage?"
+    ],
+
+    "Computer Networks": [
+        "What is a computer network?",
+        "What are LAN, MAN, and WAN?",
+        "What is network topology?",
+        "What is the OSI model?",
+        "What are the seven OSI layers?",
+        "What is the TCP/IP model?",
+        "What is an IP address?",
+        "What is the difference between IPv4 and IPv6?",
+        "What is a MAC address?",
+        "What is a subnet mask?",
+        "What is subnetting?",
+        "What is a default gateway?",
+        "What is DNS?",
+        "What is DHCP?",
+        "What is ARP?",
+        "What is ICMP?",
+        "What is TCP?",
+        "What is UDP?",
+        "What is the difference between TCP and UDP?",
+        "What is the TCP three-way handshake?",
+        "What is flow control?",
+        "What is congestion control?",
+        "What is HTTP?",
+        "What is HTTPS?",
+        "What is SSL/TLS?",
+        "What is FTP?",
+        "What is SMTP?",
+        "What is POP3?",
+        "What is IMAP?",
+        "What is a router?",
+        "What is a network switch?",
+        "What is a hub?",
+        "What is the difference between a hub, switch, and router?",
+        "What is a firewall?",
+        "What is NAT?",
+        "What is a VLAN?",
+        "What is a VPN?",
+        "What is a proxy server?",
+        "What is a packet?",
+        "What is packet switching?",
+        "What is bandwidth?",
+        "What is latency?",
+        "What is packet loss?",
+        "What is a socket?",
+        "What is a port number?",
+        "What is unicast, multicast, and broadcast?",
+        "What is a routing table?",
+        "What is the difference between static and dynamic routing?",
+        "What is the difference between distance-vector and link-state routing?",
+        "How would you troubleshoot a network connectivity issue?"
+    ],
+
+    "HR Round": [
+        "Tell me about yourself.",
+        "Why do you want to join our company?",
+        "Why should we hire you?",
+        "What are your greatest strengths?",
+        "What is one weakness you are improving?",
+        "Where do you see yourself in five years?",
+        "What are your short-term career goals?",
+        "What are your long-term career goals?",
+        "Why did you choose your degree?",
+        "Tell me about your final-year project.",
+        "What was your role in your project team?",
+        "Describe a challenge you faced.",
+        "Describe a mistake and what you learned.",
+        "Tell me about a time you worked in a team.",
+        "How do you handle disagreements with teammates?",
+        "How do you respond to constructive criticism?",
+        "How do you handle pressure?",
+        "How do you manage multiple deadlines?",
+        "How do you prioritize tasks?",
+        "What motivates you?",
+        "What makes you different from other candidates?",
+        "What do you know about our company?",
+        "Why are you interested in this role?",
+        "What skills do you want to improve?",
+        "How do you learn a new technology?",
+        "Tell me about an achievement you are proud of.",
+        "Describe a time you showed leadership.",
+        "Describe a time you solved a difficult problem.",
+        "What would you do if you did not know an answer?",
+        "How do you handle failure?",
+        "Do you prefer working alone or in a team?",
+        "How would your classmates describe you?",
+        "What kind of work environment helps you succeed?",
+        "How do you handle changing requirements?",
+        "What would you do if you disagreed with your manager?",
+        "How do you stay organized?",
+        "What does professionalism mean to you?",
+        "What are your salary expectations?",
+        "Are you willing to relocate if required?",
+        "Are you comfortable learning outside your current skill set?",
+        "What do you expect from your first job?",
+        "How do you define success?",
+        "What would you do if you had multiple urgent tasks?",
+        "How do you handle repetitive work?",
+        "What do you do to keep improving yourself?",
+        "What is your biggest academic learning experience?",
+        "Tell me about a time you helped someone.",
+        "How would you deal with an unhappy teammate?",
+        "Why should we select you for this position?",
+        "Do you have any questions for us?"
+    ]
+}
+
+
+def create_question(question, subject):
+    words = re.findall(r"[a-zA-Z0-9]+", question.lower())
+
+    ignored = {
+        "what", "is", "are", "the", "a", "an", "and", "or",
+        "how", "do", "you", "your", "to", "of", "in", "for",
+        "with", "between", "from", "would", "me", "about"
+    }
+
+    keywords = list(dict.fromkeys(
+        word for word in words
+        if word not in ignored and len(word) > 2
+    ))[:5]
+
+    if not keywords:
+        keywords = [subject.lower()]
+
+    answer = (
+        f"A good answer about this {subject} topic should explain "
+        f"the definition, its purpose, how it works, and a suitable "
+        f"example or practical use case. Include important concepts, "
+        f"advantages, limitations, and relevant comparisons where "
+        f"applicable."
+    )
+
+    return {
+        "question": question,
+        "answer": answer,
+        "keywords": keywords
+    }
+
+
+def build_levels(subject, questions):
+    # Divide 50 questions into 17 beginner, 17 intermediate,
+    # and 16 advanced questions.
+    questions = list(questions)
+
+    random.Random(42).shuffle(questions)
+
+    return {
+        "Beginner": [
+            create_question(q, subject) for q in questions[:17]
+        ],
+        "Intermediate": [
+            create_question(q, subject) for q in questions[17:34]
+        ],
+        "Advanced": [
+            create_question(q, subject) for q in questions[34:50]
+        ]
+    }
+
+
+QUESTIONS = {
+    subject: build_levels(subject, questions)
+    for subject, questions in QUESTION_BANK.items()
+}
+
+# Validate the question counts.
+for subject, levels in QUESTIONS.items():
+    total = sum(len(items) for items in levels.values())
+    assert total == 50, f"{subject} has {total} questions."
+
+assert len(QUESTIONS) == 7
