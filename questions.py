@@ -1,6 +1,3 @@
-
-# questions.py
-
 import re
 import random
 
