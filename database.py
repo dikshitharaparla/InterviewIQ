@@ -1,20 +1,28 @@
 import sqlite3
+import pandas as pd
 from datetime import datetime
 from zoneinfo import ZoneInfo
+
 DB_NAME = "interviewiq.db"
 IST = ZoneInfo("Asia/Kolkata")
+
+
 def get_current_time():
     return datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S")
+
 
 def get_connection():
     return sqlite3.connect(DB_NAME, check_same_thread=False)
 
+
 def setup_database():
     conn = get_connection()
     cursor = conn.cursor()
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS interview_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            subject TEXT,
             level TEXT,
             question TEXT,
             answer TEXT,
@@ -23,18 +31,28 @@ def setup_database():
         )
     """)
 
+    cursor.execute("PRAGMA table_info(interview_history)")
+    columns = [row[1] for row in cursor.fetchall()]
+
+    if "subject" not in columns:
+        cursor.execute(
+            "ALTER TABLE interview_history ADD COLUMN subject TEXT"
+        )
+
     conn.commit()
     conn.close()
 
-def save_attempt(level, question, answer, score):
+
+def save_attempt(subject, level, question, answer, score):
     conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
         INSERT INTO interview_history
-        (level, question, answer, score, date_time)
-        VALUES (?, ?, ?, ?, ?)
+        (subject, level, question, answer, score, date_time)
+        VALUES (?, ?, ?, ?, ?, ?)
     """, (
+        subject,
         level,
         question,
         answer,
@@ -45,20 +63,19 @@ def save_attempt(level, question, answer, score):
     conn.commit()
     conn.close()
 
+
 def get_attempts():
     conn = get_connection()
-    cursor = conn.cursor()
 
-    cursor.execute("""
-        SELECT level, question, answer, score, date_time
+    history = pd.read_sql_query("""
+        SELECT subject, level, question, answer, score, date_time
         FROM interview_history
         ORDER BY id DESC
-    """)
+    """, conn)
 
-    rows = cursor.fetchall()
     conn.close()
+    return history
 
-    return rows
 
 setup_database()
 ```
