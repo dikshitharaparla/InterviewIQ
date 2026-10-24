@@ -20,6 +20,7 @@ InterviewIQ is a web application developed to help students prepare for technica
 
 ## Project Structure
 
+```text
 InterviewIQ/
 ├── app.py
 ├── database.py
@@ -27,24 +28,33 @@ InterviewIQ/
 ├── questions.py
 ├── requirements.txt
 └── README.md
+```
 
 ## How to Run the Project
 
 ### 1. Clone the Repository
 
+```bash
 git clone https://github.com/dikshitharaparla/InterviewIQ.git
+```
 
 ### 2. Open the Project Folder
 
+```bash
 cd InterviewIQ
+```
 
 ### 3. Install the Required Libraries
 
+```bash
 pip install -r requirements.txt
+```
 
 ### 4. Run the Application
 
+```bash
 streamlit run app.py
+```
 
 The application will open in your web browser.
 
