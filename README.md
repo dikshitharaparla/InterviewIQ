@@ -77,6 +77,10 @@ The application will open in your web browser.
 
 [https://github.com/dikshitharaparla/InterviewIQ](https://github.com/dikshitharaparla/InterviewIQ)
 
+## Live Application
+
+ https://interviewiq-pro.streamlit.app/
+
 ---
 
 Developed as a student project to make technical interview practice easier and more accessible.
