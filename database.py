@@ -78,4 +78,3 @@ def get_attempts():
 
 
 setup_database()
-```
