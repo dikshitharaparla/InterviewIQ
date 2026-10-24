@@ -1,24 +1,17 @@
-
 import sqlite3
 from datetime import datetime
 from zoneinfo import ZoneInfo
-
 DB_NAME = "interviewiq.db"
 IST = ZoneInfo("Asia/Kolkata")
-
-
 def get_current_time():
     return datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S")
-
 
 def get_connection():
     return sqlite3.connect(DB_NAME, check_same_thread=False)
 
-
-def create_table():
+def setup_database():
     conn = get_connection()
     cursor = conn.cursor()
-
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS interview_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,7 +25,6 @@ def create_table():
 
     conn.commit()
     conn.close()
-
 
 def save_attempt(level, question, answer, score):
     conn = get_connection()
@@ -53,8 +45,7 @@ def save_attempt(level, question, answer, score):
     conn.commit()
     conn.close()
 
-
-def get_history():
+def get_attempts():
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -69,5 +60,5 @@ def get_history():
 
     return rows
 
-
-create_table()
+setup_database()
+```
