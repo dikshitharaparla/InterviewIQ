@@ -1,59 +1,73 @@
+
 import sqlite3
-import pandas as pd
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
-DB_NAME = "interview_history.db"
+DB_NAME = "interviewiq.db"
+IST = ZoneInfo("Asia/Kolkata")
 
 
-def setup_database():
-    connection = sqlite3.connect(DB_NAME)
-    cursor = connection.cursor()
+def get_current_time():
+    return datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S")
+
+
+def get_connection():
+    return sqlite3.connect(DB_NAME, check_same_thread=False)
+
+
+def create_table():
+    conn = get_connection()
+    cursor = conn.cursor()
 
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS attempts (
+        CREATE TABLE IF NOT EXISTS interview_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            subject TEXT,
             level TEXT,
             question TEXT,
             answer TEXT,
             score REAL,
-            date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            date_time TEXT
         )
     """)
 
-    cursor.execute("PRAGMA table_info(attempts)")
-    columns = [column[1] for column in cursor.fetchall()]
-
-    if "level" not in columns:
-        cursor.execute(
-            "ALTER TABLE attempts ADD COLUMN level TEXT"
-        )
-
-    connection.commit()
-    connection.close()
+    conn.commit()
+    conn.close()
 
 
-def save_attempt(subject, level, question, answer, score):
-    connection = sqlite3.connect(DB_NAME)
-    cursor = connection.cursor()
+def save_attempt(level, question, answer, score):
+    conn = get_connection()
+    cursor = conn.cursor()
 
     cursor.execute("""
-        INSERT INTO attempts
-        (subject, level, question, answer, score)
+        INSERT INTO interview_history
+        (level, question, answer, score, date_time)
         VALUES (?, ?, ?, ?, ?)
-    """, (subject, level, question, answer, score))
+    """, (
+        level,
+        question,
+        answer,
+        score,
+        get_current_time()
+    ))
 
-    connection.commit()
-    connection.close()
+    conn.commit()
+    conn.close()
 
 
-def get_attempts():
-    connection = sqlite3.connect(DB_NAME)
+def get_history():
+    conn = get_connection()
+    cursor = conn.cursor()
 
-    dataframe = pd.read_sql_query("""
-        SELECT subject, level, question, answer, score, date_time
-        FROM attempts
-        ORDER BY date_time DESC
-    """, connection)
+    cursor.execute("""
+        SELECT level, question, answer, score, date_time
+        FROM interview_history
+        ORDER BY id DESC
+    """)
 
-    connection.close()
-    return dataframe
+    rows = cursor.fetchall()
+    conn.close()
+
+    return rows
+
+
+create_table()
